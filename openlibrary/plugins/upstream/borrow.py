@@ -242,6 +242,7 @@ class borrow_status(delegate.page):
         edition.update_loan_status()
         available_formats = [loan['resource_type'] for loan in edition.get_available_loans()]
         loan_available = len(available_formats) > 0
+        ocaid = edition.get('ocaid', '')
         subjects = set([])
 
         for work in edition.get('works', []):
@@ -251,6 +252,7 @@ class borrow_status(delegate.page):
 
         output = {
         	'id' : key,
+            'ocaid' : ocaid,
         	'loan_available': loan_available,
         	'available_formats': available_formats,
         	'lending_subjects': [lending_subject for lending_subject in subjects]
