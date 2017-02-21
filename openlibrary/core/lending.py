@@ -240,9 +240,6 @@ def create_loan(identifier, resource_type, user_key, book_key=None):
         sync_loan(identifier)
         return loan
 
-    # loan = Loan.new(identifier, resource_type, user_key, book_key)
-    # loan.save()
-    # return loan
 
 NOT_INITIALIZED = object()
 
