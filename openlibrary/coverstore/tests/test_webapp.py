@@ -162,8 +162,8 @@ class TestWebapp(WebTestCase):
     def test_archive_status(self):
         id = self.upload('OL1M', 'logos/logo-en.png')
         d = self.jsonget('/b/id/%d.json' % id)
-        assert d['archived'] == False
-        assert d['deleted'] == False
+        assert d['archived'] is False
+        assert d['deleted'] is False
 
     def test_archive(self):
         b = self.browser

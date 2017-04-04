@@ -187,7 +187,7 @@ class OpenLibrary:
                     break
                 q['offset'] += len(result)
 
-        if 'limit' in q and q['limit'] == False:
+        if 'limit' in q and q['limit'] is False:
             return unlimited_query(q)
         else:
             q = simplejson.dumps(q)

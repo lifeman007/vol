@@ -150,8 +150,8 @@ class Test_build_data:
         e = make_edition(key="/books/OL1M", ocaid='foo00bar', _ia_meta={"collection":['lendinglibrary', 'americana']})
         w = make_work(editions=[e])
         d = build_data(w)
-        assert d['has_fulltext'] == True
-        assert d['public_scan_b'] == False
+        assert d['has_fulltext'] is True
+        assert d['public_scan_b'] is False
         assert 'printdisabled_s' not in d
         assert d['lending_edition_s'] == 'OL1M'
         assert d['ia'] == ['foo00bar']
@@ -164,8 +164,8 @@ class Test_build_data:
         e2 = make_edition(key="/books/OL2M", ocaid='foo02bar', _ia_meta={"collection":['lendinglibrary', 'internetarchivebooks']})
         w = make_work(editions=[e1, e2])
         d = build_data(w)
-        assert d['has_fulltext'] == True
-        assert d['public_scan_b'] == False
+        assert d['has_fulltext'] is True
+        assert d['public_scan_b'] is False
         assert 'printdisabled_s' not in d
         assert d['lending_edition_s'] == 'OL1M'
         assert d['ia'] == ['foo01bar', 'foo02bar']
@@ -177,8 +177,8 @@ class Test_build_data:
         e = make_edition(key="/books/OL1M", ocaid='foo00bar', _ia_meta={"collection":['printdisabled', 'inlibrary']})
         w = make_work(editions=[e])
         d = build_data(w)
-        assert d['has_fulltext'] == True
-        assert d['public_scan_b'] == False
+        assert d['has_fulltext'] is True
+        assert d['public_scan_b'] is False
         assert d['printdisabled_s'] == 'OL1M'
         assert d['lending_edition_s'] == 'OL1M'
         assert d['ia'] == ['foo00bar']
@@ -190,8 +190,8 @@ class Test_build_data:
         e = make_edition(key="/books/OL1M", ocaid='foo00bar', _ia_meta={"collection":['printdisabled', 'americana']})
         w = make_work(editions=[e])
         d = build_data(w)
-        assert d['has_fulltext'] == True
-        assert d['public_scan_b'] == False
+        assert d['has_fulltext'] is True
+        assert d['public_scan_b'] is False
         assert d['printdisabled_s'] == 'OL1M'
         assert 'lending_edition_s' not in d
         assert d['ia'] == ['foo00bar']
@@ -206,8 +206,8 @@ class Test_build_data:
         e4 = make_edition(key="/books/OL4M", ocaid='foo02bar', _ia_meta={"collection":['printdisabled', 'inlibrary']})
         w = make_work(editions=[e1, e2, e3, e4])
         d = build_data(w)
-        assert d['has_fulltext'] == True
-        assert d['public_scan_b'] == True
+        assert d['has_fulltext'] is True
+        assert d['public_scan_b'] is True
         assert d['printdisabled_s'] == 'OL4M'
         assert d['lending_edition_s'] == 'OL3M'
         assert d['ia'] == ['foo00bar', 'foo01bar', 'foo02bar']
@@ -253,4 +253,3 @@ class Test_build_data:
         assert d['author_key'] == ['OL1A', 'OL2A']
         assert d['author_facet'] ==  ['OL1A Author One', 'OL2A Author Two']
         assert d['author_alternative_name'] == ["Author 1"]
-

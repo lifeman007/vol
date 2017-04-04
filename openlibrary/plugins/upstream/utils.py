@@ -753,7 +753,7 @@ def setup():
     from openlibrary.core import helpers as h
     web.template.Template.globals.update(h.helpers)
 
-    if config.get('use_gzip') == True:
+    if config.get('use_gzip') is True:
         config.middleware.append(GZipMiddleware)
 
 if __name__ == '__main__':

@@ -101,16 +101,6 @@ def test_query_parser_fields():
     q = 'authors:Kim Harrison OR authors:Lynsay Sands'
     assert list(func(q)) == expect
 
-#     def test_public_scan(lf):
-#         param = {'subject_facet': ['Lending library']}
-#         (reply, solr_select, q_list) = run_solr_query(param, rows = 10, spellcheck_count = 3)
-#         print solr_select
-#         print q_list
-#         print reply
-#         root = etree.XML(reply)
-#         docs = root.find('result')
-#         for doc in docs:
-#             assert get_doc(doc).public_scan == False
 
 def test_get_doc():
     sample_doc = etree.fromstring('''<doc>
@@ -128,7 +118,7 @@ def test_get_doc():
 </doc>''')
 
     doc = get_doc(sample_doc)
-    assert doc.public_scan == False
+    assert doc.public_scan is False
 
 def test_build_q_list():
     param = {'q': 'test'}

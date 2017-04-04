@@ -23,7 +23,7 @@ def test_create_list_doc(wildcard):
 def test_verify_hash():
     secret_key = "aqXwLJVOcV"
     hash = account.generate_hash(secret_key, "foo")
-    assert account.verify_hash(secret_key, "foo", hash) == True
+    assert account.verify_hash(secret_key, "foo", hash) is True
 
 
 class TestAccount:
@@ -128,7 +128,7 @@ class TestAccount:
         assert b.path == "/account"
 
         b.reset()
-        assert self.login(b, "foo", "more_secret") == True
+        assert self.login(b, "foo", "more_secret") is True
 
     def test_change_email(self, ol):
         b = ol.browser()

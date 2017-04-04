@@ -72,7 +72,7 @@ def process_work_query(query):
         query["author_key"] = author["key"]
 
     ebook = query.pop("ebook", None)
-    if ebook == True or ebook == "true":
+    if ebook is True or ebook == "true":
         query["has_fulltext"] = "true"
 
     return query

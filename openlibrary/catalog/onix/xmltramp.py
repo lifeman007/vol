@@ -297,7 +297,7 @@ def unittest():
 		raise "ExpectedError", "but found success. Damn."
 	except AttributeError: pass
 
-	assert hasattr(d, 'bar') == True
+	assert hasattr(d, 'bar') is True
 
 	assert d('foo') == 'bar'
 	d(silly='yes')

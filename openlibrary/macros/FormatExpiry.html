@@ -1,6 +1,6 @@
 $def with(expiry)
 
-$if expiry is None or expiry == False:
+$if expiry is None or expiry is False:
     $# Not yet fulfilled
     <span class="red">Not yet downloaded</span>
 $else:

@@ -83,9 +83,9 @@ def scan_days():
     logger.info("Scanning %s days",str(options.days))
     book_day = _get_bookmark(options.bookmark_file)
     logger.info("Last Bookmark: %s",book_day)
-    if options.fwd == True:
+    if options.fwd is True:
         _scan('fwd',book_day,num_days)
-    elif options.bwd == True:
+    elif options.bwd is True:
         _scan('bwd',book_day,num_days)
 
 def _scan(direction, day, num_days):
@@ -221,7 +221,7 @@ def ol_get(trg):
 
 def write_stout(msg):
     ''' Writes a message on stout and flush it.'''
-    if(VERBOSE == True or logger.getEffectiveLevel() == 10):
+    if(VERBOSE is True or logger.getEffectiveLevel() == 10):
         sys.stdout.write(msg)
         sys.stdout.flush()
     else:
@@ -267,14 +267,14 @@ def parse_options():
 
     options = parser.parse_args()
 
-    if (options.fwd == True and options.bwd == True):
+    if (options.fwd is True and options.bwd is True):
         parser.print_help()
         print "\nERROR: You can't do a search backward and forward at the same time!\n"
         exit(1)
-    elif (options.fwd == False and options.bwd == False and options.daemon == False):
+    elif (options.fwd is False and options.bwd is False and options.daemon is False):
         parser.print_help()
         exit(1)
-    elif (options.bookmark_file == False and options.set_bookmark == False):
+    elif (options.bookmark_file is False and options.set_bookmark is False):
         parser.print_help()
         print "\nERROR: you have to choose a bookmark date to start from or a bookmark_file.\n"
         exit(1)
@@ -312,7 +312,7 @@ def main():
         config.load(options.config)
         config.load_config(options.config)
 
-    if (options.daemon == True):
+    if (options.daemon is True):
         start_daemon()
     else:
         scan_days()
@@ -320,4 +320,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
