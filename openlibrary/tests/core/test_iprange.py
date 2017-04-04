@@ -17,8 +17,8 @@ class TestIPDict:
 
         assert d.get("1.2.3.4") == "foo"
         assert d.get("1.2.3.44") == "foo"
-        assert d.get("1.2.4.5") == None
-        assert d.get("100.2.4.5") == None
+        assert d.get("1.2.4.5") is None
+        assert d.get("100.2.4.5") is None
 
     def test_add_ip_range_text(self):
         text = (

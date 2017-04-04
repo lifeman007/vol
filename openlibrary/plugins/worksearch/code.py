@@ -204,7 +204,7 @@ def parse_json(raw_file):
 
 def run_solr_query(param = {}, rows=100, page=1, sort=None, spellcheck_count=None, offset=None, fields=None):
     # called by do_search
-    if spellcheck_count == None:
+    if spellcheck_count is None:
         spellcheck_count = default_spellcheck_count
 
     # use page when offset is not specified

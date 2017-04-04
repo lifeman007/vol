@@ -45,7 +45,7 @@ class Test_cover:
         f = code.cover().get_tar_filename
 
 
-        assert f(42, "s") == None
+        assert f(42, "s") is None
 
         offsets[42] = 1234
         sizes[42] = 567

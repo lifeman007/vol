@@ -42,7 +42,7 @@ def test_names():
 
 def test_flip_name():
     assert names.flip_name("Smith, John") == "John Smith"
-    assert names.flip_name("John Smith") == None
+    assert names.flip_name("John Smith") is None
 
 def test_compare_part():
     assert names.compare_part("J", "John")

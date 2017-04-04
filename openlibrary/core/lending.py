@@ -357,7 +357,7 @@ class Loan(dict):
 
         created = h.parse_datetime(data['created'])
 
-        # For historic reasons, OL considers expiry == None as un-fulfilled
+        # For historic reasons, OL considers expiry None as un-fulfilled
         # loan.
         if data['fulfilled']:
             expiry = data['until']

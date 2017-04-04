@@ -19,11 +19,11 @@ def quote(x, elt=True):
 
 class Element:
 	def __init__(self, name, attrs=None, children=None, prefixes=None, line=None):
-		if islst(name) and name[0] == None: name = name[1]
+		if islst(name) and name[0] is None: name = name[1]
 		if attrs:
 			na = {}
 			for k in attrs.keys():
-				if islst(k) and k[0] == None: na[k[1]] = attrs[k]
+				if islst(k) and k[0] is None: na[k[1]] = attrs[k]
 				else: na[k] = attrs[k]
 			attrs = na
 

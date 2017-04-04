@@ -39,10 +39,10 @@ def _test_write_image(prefix, path):
 
 def test_bad_image():
     prefix = config.data_root + '/bad'
-    assert coverlib.write_image('', prefix) == None
+    assert coverlib.write_image('', prefix) is None
 
     prefix = config.data_root + '/bad'
-    assert coverlib.write_image('not an image', prefix) == None
+    assert coverlib.write_image('not an image', prefix) is None
 
 def test_resize_image_aspect_ratio():
     """make sure the aspect-ratio is maintained"""
