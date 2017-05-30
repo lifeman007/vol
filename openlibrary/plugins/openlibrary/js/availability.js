@@ -113,18 +113,7 @@ $(function(){
 
 	getAvailability(ocaids, function(response) {
             for (var book_ocaid in response) {
-		if (response[book_ocaid].status === "not_lendable") {
-                    for (var book_key in books) {
-			var book_ocaids = books[book_key];
-			if (book_ocaids.indexOf(book_ocaid) > -1) {
-			    $(selector + "[data-key=" + book_key  + "]")
-				.removeClass("borrow-link");
-			    $(selector + "[data-key=" + book_key  + "]")
-				.parent().remove();
-			    delete books[book_key];
-			}
-		    }
-		} else if (response[book_ocaid].status === "available") {
+		if (response[book_ocaid].status === "available") {
                     // check all the books on this page
                     for (var book_key in books) {
 			var book_ocaids = books[book_key];
@@ -135,7 +124,8 @@ $(function(){
 			    // should limit scope to `selector` ! XXX
                             $(selector + "[data-key=" + book_key  + "]")
 				.attr("href", "/borrow/ia/" + book_ocaid);
-
+			    $(selector + "[data-key=" + book_key  + "]")
+				.removeClass("hidden");
                             // since we've found an available edition to
                             // represent this book, we can stop and remove
                             // book_ocaid from book_ocaids (one less book
@@ -143,20 +133,31 @@ $(function(){
                             delete books[book_key];
 			}
                     }
-		}
-            };
+		} /*
 
-            // for anything remaining in books, set to checked-out
-            for (var book_key in books) {
-		$(selector + "[data-key=" + book_key  + "] span.read-icon")
-		    .removeClass("borrow");
-		$(selector + "[data-key=" + book_key  + "] span.read-icon")
-		    .addClass("checked-out");
-		$(selector + "[data-key=" + book_key  + "] span.read-label")
-		    .html("Checked-out");
-		delete books[book_key];
-            }
-
+else if (response[book_ocaid].status === "unavailable") {
+		    $(selector + "[data-key=" + book_key  + "]")
+			.removeClass("hidden");
+		    $(selector + "[data-key=" + book_key  + "] span.read-icon")
+			.removeClass("borrow");
+		    $(selector + "[data-key=" + book_key  + "] span.read-icon")
+			.addClass("checked-out");
+		    $(selector + "[data-key=" + book_key  + "] span.read-label")
+			.html("Checked-out");
+		    delete books[book_key];
+		} else if (response[book_ocaid].status === "not_lendable") {
+                    for (var book_key in books) {
+			var book_ocaids = books[book_key];
+			if (book_ocaids.indexOf(book_ocaid) > -1) {
+			    $(selector + "[data-key=" + book_key  + "]")
+				.removeClass("borrow-link");
+			    $(selector + "[data-key=" + book_key  + "]")
+				.parent().remove();
+			    delete books[book_key];
+			}
+		    }
+		} */
+	    }
 	});
     };
 
