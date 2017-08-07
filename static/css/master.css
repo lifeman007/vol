@@ -1660,6 +1660,80 @@ header .expand .search-bar-input input {
     float: right;
 }
 
+
+/* Enhanced Work Page */
+.book-page {
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 100;
+    background-color: #fbfbfb;
+    margin: 10px;
+}
+
+.book-page .book-about {
+    flex: 1;
+}
+
+.book-page .cta-box {
+    margin: 10px;
+    font-size: .8em;
+    width: 225px;
+    background-color: #fff;    
+    box-shadow: 0px 0px 3px 2px #eaeaea;
+    border-radius: 10px;
+}
+
+.book-page .cta-btns {
+    display: flex;
+}
+
+.book-page .cta-btn {
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.book-page .cta-btns .cta-btn {
+    margin-right: 10px;
+}
+
+.book-page .cta-btns .cta-btn:last-child {
+    margin-right: 0px;
+}
+
+.book-page .cta-btns .primary {
+    color: #fff;
+    background-color: #1873FF;
+    border: 2px solid #1873FF;
+}
+
+.book-page .cta-btns .secondary {
+    background-color: #fbfafa;
+    border: 2px solid #eaeaea;
+}
+
+.book-page .cta-btns .availability {
+    flex: 1;
+}
+
+.book-page .cta-btns .likability {
+    min-width: 75px;
+}
+
+.book-page .cta-box .section {
+    font-size: .8em;
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.book-page .cta-box .section:last-child {
+    border-bottom: none;
+}
+
+.heart-decoration {
+    color: #fff;
+    text-shadow: 1px 1px 1px #fff;
+}
+
 /* LAYOUT */
 
 div#placement {width:960px;margin:0 auto;text-align:left;clear:both;}

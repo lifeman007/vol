@@ -54,6 +54,35 @@ $add_metatag(property="og:description", content=description)
 $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
 
 <div class="contentContainer" itemscope itemtype="https://schema.org/Book">
+  <div class="book-page">
+    <div class="book-coverart">
+    </div>
+    <div class="book-about">
+      <h1>Book!</h1>
+    </div>
+    <div class="cta-box">
+      <div class="section">
+	<p>1st Edition by Penguin, 2014</p>
+	<p>204 Pages</p>
+	<div class="cta-btns">
+	  <button class="availability primary cta-btn">Read</button>
+	  <button class="likability secondary cta-btn"><span class="heart-decoration">❤</span> 100</button>
+	</div>
+      </div>
+      <div class="section">
+	<ul>
+	  <li>Find in Local Libraries</li>
+	  <li>Buy on Better World Books</li>
+	  <li>Buy on Amazon</li>
+	</ul>
+      </div>
+      <div class="section">
+	<a href="">Edit this book</a>
+      </div>
+
+    </div>
+  </div>
+
     <div id="contentHead">
 
         $:macros.databarView(page)
