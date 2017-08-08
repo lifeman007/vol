@@ -1661,79 +1661,6 @@ header .expand .search-bar-input input {
 }
 
 
-/* Enhanced Work Page */
-.book-page {
-    display: flex;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 100;
-    background-color: #fbfbfb;
-    margin: 10px;
-}
-
-.book-page .book-about {
-    flex: 1;
-}
-
-.book-page .cta-box {
-    margin: 10px;
-    font-size: .8em;
-    width: 225px;
-    background-color: #fff;    
-    box-shadow: 0px 0px 3px 2px #eaeaea;
-    border-radius: 10px;
-}
-
-.book-page .cta-btns {
-    display: flex;
-}
-
-.book-page .cta-btn {
-    border-radius: 3px;
-    padding: 10px;
-}
-
-.book-page .cta-btns .cta-btn {
-    margin-right: 10px;
-}
-
-.book-page .cta-btns .cta-btn:last-child {
-    margin-right: 0px;
-}
-
-.book-page .cta-btns .primary {
-    color: #fff;
-    background-color: #1873FF;
-    border: 2px solid #1873FF;
-}
-
-.book-page .cta-btns .secondary {
-    background-color: #fbfafa;
-    border: 2px solid #eaeaea;
-}
-
-.book-page .cta-btns .availability {
-    flex: 1;
-}
-
-.book-page .cta-btns .likability {
-    min-width: 75px;
-}
-
-.book-page .cta-box .section {
-    font-size: .8em;
-    padding: 10px;
-    border-bottom: 1px solid #eaeaea;
-}
-
-.book-page .cta-box .section:last-child {
-    border-bottom: none;
-}
-
-.heart-decoration {
-    color: #fff;
-    text-shadow: 1px 1px 1px #fff;
-}
-
 /* LAYOUT */
 
 div#placement {width:960px;margin:0 auto;text-align:left;clear:both;}
@@ -5475,6 +5402,125 @@ body#user #description p {font-size:.875em;margin:0 0 30px 0;}
 #contentBody.map .olControlAttribution {bottom:10px!important;right:10px!important;font-family:"Lucida Grande","Verdana","Arial",sans-serif!important;font-size:.6875em!important;}
 #libraryInfo td {padding-top:5px; padding-bottom: 5px; vertical-align: top; margin-top: 20px;font-family:"Lucida Grande","Verdana","Arial",sans-serif;}
 #libraryInfo .label {font-weight: bold; width: 25%; padding-right: 20px;}
+
+/* Enhanced Work Page */
+.book-page {
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 100;
+    background-color: #fbfbfb;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.book-page .book-coverart .cover {
+    margin: 10px;
+    box-shadow: 0px 1px 2px 1px #bdbdbd;
+}
+
+.book-page .book-about {
+    flex: 1;
+    padding: 0px 10px;
+}
+
+.book-page .book-about h1 {
+font-family: 'Poppins', sans-serif;
+    font-size: 1.7em;
+    color: #333333;
+    font-weight: 100;
+    margin: 10px 0px;
+}
+
+.book-page .book-about .desc p {
+    max-height: 175px;
+    overflow: auto;
+    text-overflow: ellipsis;
+    font-size: .7em;
+}
+
+.book-page .cta-box {
+    margin: 10px;
+    font-size: .8em;
+    width: 225px;
+    background-color: #fff;    
+    box-shadow: 0px 1px 4px 1px #e6e6e6;
+    border-radius: 10px;
+    height: 0%;
+}
+
+.book-page .cta-box table.price-table tr td {
+    padding: 5px;
+}
+
+.book-page .cta-box table.price-table tr td a {
+    color: 
+}
+
+.book-page .cta-btns {
+    display: flex;
+}
+
+.book-page .cta-btn {
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+
+.book-page .cta-btns .cta-btn {
+    margin-right: 10px;
+}
+
+.book-page .cta-btns .cta-btn:last-child {
+    margin-right: 0px;
+}
+
+.book-page .cta-btns .primary {
+    color: #fff;
+    background-color: #1873FF;
+    border: 2px solid #1873FF;
+}
+
+.book-page .cta-btns .secondary {
+    background-color: #fbfafa;
+    border: 2px solid #eaeaea;
+}
+
+.book-page .cta-btns .availability {
+    flex: 1;
+}
+
+.book-page .cta-btns .likability {
+    min-width: 75px;
+    display: flex;
+}
+
+.book-page .cta-box .section {
+    margin-bottom: 0px;
+    font-size: .8em;
+    padding: 15px 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.book-page .cta-box .section ul li {
+    list-style: none;
+}
+
+.book-page .cta-box .section:last-child {
+    border-bottom: none;
+}
+
+.heart-decoration {
+    height: 10px;
+    position: relative;
+    margin: 0px 6px;
+    top: 2px;
+}
+
+.book-decoration {
+    height: 10px;
+    position: relative;
+    margin: 0px 6px;
+    top: 2px;
+}
 
 /* Added by Anand July 29, 2011*/
 span.actions a span.checked-out {

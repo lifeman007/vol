@@ -56,28 +56,57 @@ $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
 <div class="contentContainer" itemscope itemtype="https://schema.org/Book">
   <div class="book-page">
     <div class="book-coverart">
+      $:render_template('covers/book_cover', page)
+      $:render_template("covers/change", page, ".bookCover img")
+
+
     </div>
     <div class="book-about">
-      <h1>Book!</h1>
+      <h1>
+        $if page.get('subtitle', ''):
+          <span itemprop="name">$page.title</span><span title="subtitle">: $page.subtitle</span>
+        $else:
+          <span itemprop="name">$page.title</span>
+      </h1>
+      $if page.description:
+        <div class="desc">$:sanitize(format(page.description))</div>
     </div>
     <div class="cta-box">
       <div class="section">
 	<p>1st Edition by Penguin, 2014</p>
 	<p>204 Pages</p>
 	<div class="cta-btns">
-	  <button class="availability primary cta-btn">Read</button>
-	  <button class="likability secondary cta-btn"><span class="heart-decoration">❤</span> 100</button>
+	  <button class="availability primary cta-btn"><img class="book-decoration" src="/static/images/book.png"/> Read</button>
+	  <button class="likability secondary cta-btn"><img class="heart-decoration" src="/static/images/heart.png"/> 100</button>
 	</div>
       </div>
       <div class="section">
-	<ul>
-	  <li>Find in Local Libraries</li>
-	  <li>Buy on Better World Books</li>
-	  <li>Buy on Amazon</li>
-	</ul>
+	<table class="price-table">
+	  <tbody>
+	    <tr>
+	      <td><a href="">Check local libraries</a></td>
+	    </tr>
+	    <tr>
+	      <td><a href="">Buy on Amazon</a></td>
+	    </tr>
+	    <tr>
+	      <td><a href="">Buy on Better World Books</a></td>
+	    </tr>
+	  </tbody>
+	</table>
       </div>
       <div class="section">
-	<a href="">Edit this book</a>
+	$ edit_url = page.url(suffix="/edit") if page.type.key in ["/type/work", "/type/edition"] else page.key + "?m=edit"
+	<a class="linkButton" name="$edit_url" title="Edit this template" accesskey="e">Edit this book</a>
+        $ author = page.get_most_recent_change().author if "superfast" in ctx.features else get_recent_author(page)
+        $if author:
+            <div class="brown smaller sansserif">$_("Last edited by") <a href="$author.key" rel="nofollow">$author.displayname</a></div>
+        $else:
+            <div class="brown smaller sansserif">$_("Last edited anonymously")</div>
+        <div class="smallest gray sansserif">$(page.last_modified and datestr(page.last_modified)) | <a href="$page.url(m='history')" rel="nofollow" title="View this template's edit history">History</a></div>
+    </div>
+
+
       </div>
 
     </div>
