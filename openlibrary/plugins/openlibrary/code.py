@@ -56,9 +56,6 @@ models.register_types()
 # Remove movefiles install hook. openlibrary manages its own files.
 infogami._install_hooks = [h for h in infogami._install_hooks if h.__name__ != "movefiles"]
 
-import lists
-lists.setup()
-
 logger = logging.getLogger("openlibrary")
 
 class hooks(client.hook):
@@ -779,8 +776,10 @@ def setup_context_defaults():
 
 def setup():
     import home, inlibrary, borrow_home, libraries, stats, support, \
-        events, status, merge_editions, authors
+        events, status, merge_editions, authors, lists, works
 
+    works.setup()
+    lists.setup()
     home.setup()
     inlibrary.setup()
     borrow_home.setup()
