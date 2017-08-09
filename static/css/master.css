@@ -731,7 +731,7 @@ button.larger{font-size:18px!important;}
 .clearfix:after {content:".";display:block;height:0;clear:both;visibility:hidden;}
 .right.illustration {margin:0 0 30px 30px;}
 .left.illustration {margin:0 30px 30px 0;}
-.illustration {text-align:center;margin-bottom:35px;}
+.illustration {text-align:center;margin-bottom:10px;}
 button.plainText {border:none;font-family:"Lucida Grande", Verdana, Geneva, Helvetica, Arial, sans-serif;font-size:0.75em;color:#e44028;background-color: #fff;cursor:pointer;}
 button.plainText:hover {color:#35672e;}
 button.plain {border:none;font-family:"Lucida Grande", Verdana, Geneva, Helvetica, Arial, sans-serif;font-size:0.75em;color:#000;background-color:transparent!important;cursor:pointer;}
@@ -5617,6 +5617,23 @@ span.actions a span.checked-out {
 .page-banner-center {
     text-align: center;
 }
+
+/* Work Enhancements */
+
+.workCover .main-cta {
+    text-align: center;
+    border: none;
+}
+
+.workCover .main-cta button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    width: 180px;
+    background-color: #1873FF;
+    color: #fff;	  
+}
+
 
 
 .box-shadow-menu {
