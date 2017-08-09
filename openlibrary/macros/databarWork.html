@@ -82,104 +82,79 @@ $if page.volumes:
                 <p><a href="$viewbook.replace('XXX', v.ia_id)">View Volume $v.volume_number</a></p>
             </div>
     </div>
-$elif page.is_access_restricted():
-    <div>
-        <h3 class="header">
-            <span class="icon read"></span>
-            <span class="head">Read</span>
-        </h3>
-        <div class="panel">
-            <p><a href="$page.url('/daisy')" title="Download Protected DAISY" class="plain"><meta itemprop="bookFormat" content="EBook/DAISY3"/><span class="underline">DAISY</span> <img src="/images/icons/icon-encrypto-sm.png" width="11" height="14" alt="Download Protected DAISY"/></a></p>
-        </div>
-    </div>
-$elif page.get('ocaid'):
-    <div>
-        <h3 class="header">
-            <span class="icon read"></span>
-            <span class="head">Read</span>
-        </h3>
-        <div class="panel" id="readBooks">
-            <p><a href="$viewbook.replace('XXX', page.ocaid)" title="Use BookReader to read online" class="read-btn"><strong>Read online</strong></a></p>
-            $if downloadbook:
-                <p><a href="$downloadbook" title="Download a PDF from Internet Archive">PDF</a></p>
-            $if djvutxt:
-                <p><a href="$djvutxt" title="Download a text version from Internet Archive">Plain text</a></p>
-            $if daisy:
-                <p><a href="$page.url('/daisy')" title="Download a DAISY file from Internet Archive"><meta itemprop="bookFormat" content="EBook/DAISY3"/><meta itemprop="accessibilityFeature" content="unlocked"/>DAISY</a></p>
-            $if epub:
-                <p><a href="$epub" title="Download an ePub from Internet Archive">ePub</a></p>
-            $if mobi:
-                <p><a href="$mobi" title="Download a MOBI file from Internet Archive">MOBI</a>
-        </div>
-    </div>
 $else:
     <div>
-        <h3 class="closed">
-            <span class="icon readinact"></span>
-            <span class="head">Read</span>
-	</h3>
-	<div class="panel">
-            <p class="smaller">No readable version available.</p>
-	</div>
-    </div>
+      <h3 class="header">
+        <span class="icon read"></span>
+        <span class="head">Read</span>
+      </h3>
+      <div class="panel">
+        $if (isbn or oclc_numbers or 'lendinglibrary' in collections or library) and not private_collection_in(collections):
+          <div class="panel">
+              $if 'lendinglibrary' in collections or library:
+                  $ current_and_available_loans = page.get_current_and_available_loans()
+                  $ user_loan = None
+                  $if ctx.user:
+                      $for current_loan in current_and_available_loans[0]:
+                          $if current_loan['user'] == ctx.user.key:
+                              $ user_loan = current_loan
+                              $ break
+                  $:macros.LoanStatus(page, 'eBook', ctx.user, current_and_available_loans, contrib, '<br/>')
+                  $# Added here instead of LoanStatus to avoid the js being bound to every item
+                  $# in a work's edition listing
+                  <script type="text/javascript">
+                  \$(function() {
+                      \$('.return-book').submit(function(event) {
+                          if (!confirm("Really return this book?")) {
+                              event.preventDefault();
+                          }
+                      });
+                  });
+                  </script>
+        
+                  $ checkedout = current_and_available_loans[0] if current_and_available_loans else []
+                  $if checkedout and not user_loan:
+                      $ work = page.works and page.works[0]
+                      $if work and work.edition_count > 1:
+                          <p class="btn-notice">
+                              <span class="smaller">Other editions of this book may be available.</span>
+                              </br>
+                              <a data-ol-link-track="EditionPageCheckOtherEditionsButton" href="$work.url()" class="check-btn">Check Other Editions</a>
+                          </p>
+          </div>
 
-$if (isbn or oclc_numbers or 'lendinglibrary' in collections or library) and not private_collection_in(collections):
-    <div>
-        <h3 class="header">
-            <span class="icon borrow"></span>
-            <span class="head">Borrow</span>
-	</h3>
-	<div class="panel">
-            $if 'lendinglibrary' in collections or library:
-                $ current_and_available_loans = page.get_current_and_available_loans()
-                $ user_loan = None
-                $if ctx.user:
-                    $for current_loan in current_and_available_loans[0]:
-                        $if current_loan['user'] == ctx.user.key:
-                            $ user_loan = current_loan
-                            $ break
-                $:macros.LoanStatus(page, 'eBook', ctx.user, current_and_available_loans, contrib, '<br/>')
-                $# Added here instead of LoanStatus to avoid the js being bound to every item
-                $# in a work's edition listing
-                <script type="text/javascript">
-                \$(function() {
-                    \$('.return-book').submit(function(event) {
-                        if (!confirm("Really return this book?")) {
-                            event.preventDefault();
-                        }
-                    });
-                });
-                </script>
+        $elif page.get('ocaid'):
+            <div class="panel" id="readBooks">
+                <p><a href="$viewbook.replace('XXX', page.ocaid)" title="Use BookReader to read online" class="read-btn"><strong>Read online</strong></a></p>
+                $if downloadbook:
+                    <p><a href="$downloadbook" title="Download a PDF from Internet Archive">PDF</a></p>
+                $if djvutxt:
+                    <p><a href="$djvutxt" title="Download a text version from Internet Archive">Plain text</a></p>
+                $if epub:
+                    <p><a href="$epub" title="Download an ePub from Internet Archive">ePub</a></p>
+                $if mobi:
+                    <p><a href="$mobi" title="Download a MOBI file from Internet Archive">MOBI</a>
+            </div>
 
-                $ checkedout = current_and_available_loans[0] if current_and_available_loans else []
-                $if checkedout and not user_loan:
-                    $ work = page.works and page.works[0]
-                    $if work and work.edition_count > 1:
-                        <p class="btn-notice">
-                            <span class="smaller">Other editions of this book may be available.</span>
-                            </br>
-                            <a data-ol-link-track="EditionPageCheckOtherEditionsButton" href="$work.url()" class="check-btn">Check Other Editions</a>
-                        </p>
+	$if page.is_access_restricted() or daisy:
+            <p><a href="$page.url('/daisy')" title="Download Protected DAISY" class="plain"><meta itemprop="bookFormat" content="EBook/DAISY3"/>Print Disabled <span class="underline">DAISY</span> <img src="/images/icons/icon-encrypto-sm.png" width="11" height="14" alt="Download Protected DAISY"/></a></p>
 
-            <p>
-                $if oclc_numbers:
-                    <p><a href="$worldcatoclc.replace('XXX', oclc_numbers)" title="Check WorldCat for an edition near you">
-                $elif isbn:
-                    <a href="$worldcat.replace('XXX', isbn)" title="Check WorldCat for an edition near you">
+	   <p>
+           $if oclc_numbers:
+              <a href="$worldcatoclc.replace('XXX', oclc_numbers)" title="Check WorldCat for an edition near you">
+                Find a physical copy near you</a> &mdash; <span class="smaller">powered by <a href="https://worldcat.org">WorldCat</a></span>
+           $elif isbn:
+              <a href="$worldcat.replace('XXX', isbn)" title="Check WorldCat for an edition near you">
+                Find a physical copy near you</a> &mdash; <span class="smaller">powered by <a href="https://worldcat.org">WorldCat</a></span>
+	   $else:
+              <p class="smaller">Try a <a href="https://www.worldcat.org/" title="Search WorldCat for an available edition">WorldCat</a> search?</p>
+           </p>
 
-		Find a physical copy near you</a> &mdash; <span class="smaller">powered by <a href="https://worldcat.org">WorldCat</a></span>
-            </p>
+	$if not page.get('ocaid') and not (page.is_access_restricted() or daisy):
+            <div class="panel">
+                <p class="smaller">No readable version available.</p>
+            </div>
         </div>
-    </div>
-$else:
-    <div>
-        <h3 class="closed">
-            <span class="icon borrowinact"></span>
-            <span class="head">Borrow</span>
-	</h3>
-	<div class="panel">
-            <p class="smaller">Try a <a href="https://www.worldcat.org/" title="Search WorldCat for an available edition">WorldCat</a> search?</p>
-	</div>
     </div>
 
 $if isbn or asin or scribd:
