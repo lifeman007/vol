@@ -158,7 +158,7 @@ var create_subject_carousel;
 $().ready(function() {
   create_subject_carousel = function(subject_name, type, options) {
     var ITEMS_PER_PAGE = 6;
-    var apiurl = '/' + type + '/' + subject_name + '.json?has_fulltext=true';
+    var apiurl = '/' + type + '/' + subject_name + (type === 'authors'? '/works': '') + '.json?has_fulltext=true';
     options = options || {};
     options.pagesize = ITEMS_PER_PAGE;
     options.readable = true;
@@ -198,7 +198,8 @@ $().ready(function() {
                 }
 
                 subject.loadPage(index-1, function(data) {
-                    var works = data.works;
+                    var works = data.works || data.entries;
+		    console.log(works);
                     $.each(works, function(widx, work) {
                         carousel.add(index + widx, subject.renderWork(work));
                     });

@@ -5408,14 +5408,39 @@ body#user #description p {font-size:.875em;margin:0 0 30px 0;}
     display: flex;
     font-family: 'Poppins', sans-serif;
     font-weight: 100;
-    background-color: #fbfbfb;
+    background-color: #fff; /*rgba(243, 241, 234, 0.75);*/
     padding: 10px;
     border-radius: 3px;
 }
 
+.book-page .section {
+    margin-bottom: 0px;
+}
+
+.book-page .book-main-column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.book-page .book-main-top-row {
+    display: flex;
+}
+
+.book-page .book-lists {
+    background: #f9f8f5;
+    border: 1px solid #e2dede;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.book-page .book-main-left-column {
+}
+
 .book-page .book-coverart .cover {
     margin: 10px;
-    box-shadow: 0px 1px 2px 1px #bdbdbd;
+    box-shadow: 1px 2px 5px 1px #bdbdbd;
 }
 
 .book-page .book-about {
@@ -5423,33 +5448,61 @@ body#user #description p {font-size:.875em;margin:0 0 30px 0;}
     padding: 0px 10px;
 }
 
+.book-page .book-about .book-title-author {
+    margin-bottom: 10px;
+}
+
 .book-page .book-about h1 {
-font-family: 'Poppins', sans-serif;
-    font-size: 1.7em;
-    color: #333333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5em;
+    color: #444;
+    font-weight: 400;
+    margin: 0px;
+    margin-top: 10px;
+    letter-spacing: -1.5px;
+}
+
+.book-page .book-about h2.book-authors {
+    font-size: 1em;
+    color: #666;
     font-weight: 100;
-    margin: 10px 0px;
+    margin: 0px;
 }
 
-.book-page .book-about .desc p {
-    max-height: 175px;
-    overflow: auto;
-    text-overflow: ellipsis;
-    font-size: .7em;
+.book-page .book-about h2.book-authors a {
+    color: #1873ff;
 }
 
-.book-page .cta-box {
-    margin: 10px;
+
+.book-page .book-about .book-description p {
     font-size: .8em;
+}
+
+.book-page .book-about .book-edition-details {
+
+}
+
+.book-page .right-column {
+    margin: 10px;
     width: 225px;
-    background-color: #fff;    
-    box-shadow: 0px 1px 4px 1px #e6e6e6;
+}
+.book-page .cta-box {
+    font-size: .8em;
+    background-color: rgb(249, 248, 245);
+    box-shadow: 0px 1px 5px 0px #f1f1f1;
+    border: 1px solid #e2dede;
     border-radius: 10px;
-    height: 0%;
+/* 
+   font-size: .8em;
+    background-color: #fff;    
+    box-shadow: 1px 2px 10px 1px #d6d6d6;
+    border: 1px solid #dedede;
+    border-radius: 10px;
+*/
 }
 
 .book-page .cta-box table.price-table tr td {
-    padding: 5px;
+    padding: 5px 0px;
 }
 
 .book-page .cta-box table.price-table tr td a {
@@ -5461,12 +5514,14 @@ font-family: 'Poppins', sans-serif;
 }
 
 .book-page .cta-btn {
+    font-size: 1em;
     border-radius: 5px;
     padding: 8px 10px;
 }
 
 .book-page .cta-btns .cta-btn {
     margin-right: 10px;
+    font-size: 1.5em;
 }
 
 .book-page .cta-btns .cta-btn:last-child {
@@ -5477,11 +5532,14 @@ font-family: 'Poppins', sans-serif;
     color: #fff;
     background-color: #1873FF;
     border: 2px solid #1873FF;
+    font-weight: bold;
 }
 
 .book-page .cta-btns .secondary {
-    background-color: #fbfafa;
-    border: 2px solid #eaeaea;
+    background-color: #fdfdfd;
+    border: 2px solid #dcd3d3;
+    font-weight: bold;
+    color: #333;
 }
 
 .book-page .cta-btns .availability {
@@ -5493,33 +5551,102 @@ font-family: 'Poppins', sans-serif;
     display: flex;
 }
 
-.book-page .cta-box .section {
-    margin-bottom: 0px;
-    font-size: .8em;
-    padding: 15px 10px;
-    border-bottom: 1px solid #eaeaea;
+.heart-decoration {
+    height: 13px;
+    position: relative;
+    margin: 0px 5px;
+    top: 3px;
 }
 
-.book-page .cta-box .section ul li {
-    list-style: none;
+.book-decoration {
+    height: 14px;
+    position: relative;
+    margin: 0px 3px;
+    top: 2px;
+    margin-left: -5px;
+}
+
+.book-page .cta-box .section {
+    margin-bottom: 0px;
+    padding: 15px 10px;
+    border-bottom: 1px solid #dedede;
+}
+
+.book-page .right-column .section a {
+    color: #1873FF;    
+}
+
+.book-page .cta-box .book-edition-actions {
+    font-size: .85em;
+}
+.book-page .cta-box .book-edition-summary {
+    color: #333;
+    line-height: 1.3em;
+    margin-bottom:5px;
+}
+
+.book-page .cta-box .book-prices {
+    font-size: .9em;
+}
+
+.book-page .cta-box .book-prices a {
+    color: #1873FF;
+    text-decoration: none;
 }
 
 .book-page .cta-box .section:last-child {
     border-bottom: none;
 }
 
-.heart-decoration {
-    height: 10px;
-    position: relative;
-    margin: 0px 6px;
-    top: 2px;
+.book-page .cta-box .book-edit {
+    font-size: .9em;
 }
 
-.book-decoration {
-    height: 10px;
-    position: relative;
-    margin: 0px 6px;
-    top: 2px;
+.book-page .cta-box .book-edit a {
+    color: #1873FF;
+    text-decoration: none;
+}
+
+.book-page .right-column .book-edit-details {
+    margin-top: 5px;
+    color: #333;
+    font-size: .9em;
+}
+
+.book-page .right-column .book-edit-details a {
+    color: #333;
+    text-decoration: underline;
+}
+
+.book-page .right-column .book-share {
+    justify-content: center;
+    display: flex;
+}
+
+.book-page .right-column .book-share img {
+    width: 35px;
+    height: 35px;
+    padding: 15px;
+}
+
+#content .book-page .right-column .book-subjects ul li {
+    border-bottom: 1px solid #dbdcd3;
+    list-style: none;
+    padding: 5px 0px;
+    font-size: .8em;
+    padding-left: 5px;
+}
+
+.book-page .right-column .book-subjects ul li a {
+    text-decoration: none;
+}
+
+.book-page h3 {
+    font-size: .7em;
+    color: #555;
+    font-weight: bold;
+    border-bottom: 1px solid #dbdcd3;
+    padding-bottom: 10px;
 }
 
 /* Added by Anand July 29, 2011*/

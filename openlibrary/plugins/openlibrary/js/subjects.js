@@ -20,7 +20,7 @@ function Subject(data, options, callback) {
         pagesize: 12
     }
     this.settings = $.extend(defaults, options);
-    this.slug = data.name.replace(/\s+/g, '-').toLowerCase();
+    this.slug = data.name? data.name.replace(/\s+/g, '-').toLowerCase() : '';
     this.filter = {};
     this.published_in = options.published_in ? options.published_in : undefined;
     this.has_fulltext = options.readable ? "true" : "false";
@@ -105,7 +105,7 @@ $.extend(Subject.prototype, {
         var ed = 'edition' + (work.edition_count > 1 ? 's' : '');
         var titlestring = work.title + " by " + authors.join(', ') +
             ' (' + work.edition_count + ' ' + ed + ')';
-        var bookcover_url = '//covers.openlibrary.org/b/id/' + work.cover_id + '-M.jpg';
+        var bookcover_url = '//covers.openlibrary.org/b/id/' + (work.cover_id || work.covers ? work.covers[0]: '') + '-M.jpg';
         var format = work.public_scan ? 'public' : (work.printdisabled && !work.ia_collection.includes('inlibrary')) ? 'daisy' : 'borrow';
         var bookread_url = work.public_scan ?
             ('//archive.org/stream/' + work.ia + '?ref=ol') :
@@ -164,7 +164,11 @@ $.extend(Subject.prototype, {
             }
             $.extend(params, this.filter);
 
-            key = this.key.replace(/\s+/g, '_');
+	    if (this.key) {
+		key = this.key.replace(/\s+/g, '_');
+	    } else {
+		key = this.links.author + '/works';
+	    }
             var url = key + ".json?" + urlencode(params);
             var t = this;
 
@@ -178,7 +182,11 @@ $.extend(Subject.prototype, {
     _ajax: function(params, callback) {
         params = $.extend({"limit": this.settings.pagesize, "offset": 0},
                           this.filter, params);
-        key = this.key.replace(/\s+/g, '_');
+	if (this.key) {
+	    key = this.key.replace(/\s+/g, '_');
+	} else {
+	    key = this.links.author + '/works';
+	}
         var url = key + ".json?" + urlencode(params);
         $.getJSON(url, callback);
     },

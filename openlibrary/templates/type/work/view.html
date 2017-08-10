@@ -6,6 +6,8 @@ $ meta_cover_url = item_image(page.get_cover_url("M"), default="https://openlibr
 
 $var title: $title
 
+$ primary_author = page.get_authors()[0].key.replace('/authors/', '') if page.authors else ''
+
 $code:
     def render_description():
         items = []
@@ -53,76 +55,160 @@ $add_metatag(property="og:description", content=description)
 
 $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
 
+$def render_subjects(label, subjects, prefix=""):
+    $if subjects:
+      <h3 class="uppercase">$label</h3>
+      <ul>
+        $for subject in subjects:
+          <li><a href="/subjects/$prefix$utf8(subject.lower().replace(' ', '_').replace(',',''))">$subject</a></li>
+      </ul>
+
 <div class="contentContainer" itemscope itemtype="https://schema.org/Book">
   <div class="book-page">
-    <div class="book-coverart">
-      $:render_template('covers/book_cover', page)
-      $:render_template("covers/change", page, ".bookCover img")
+    <div class="book-main-column">
+      <div class="book-main-top-row">
+        <div class="book-main-left-column">
+          <div class="book-coverart">
+            $:render_template('covers/book_cover', page)
+            $:render_template("covers/change", page, ".bookCover img")
+          </div>
+        </div>
+        <div class="book-main-right-column">
+          <div class="book-about">
+            <div class="book-title-author">
+              <h1>
+                $if page.get('subtitle', ''):
+                  <span itemprop="name">$page.title</span><span title="subtitle">: $page.subtitle</span>
+                $else:
+                  <span itemprop="name">$page.title</span>
+              </h1>
 
+              <h2 class="book-authors">by 
+                $if page.authors:
+                  $ author_list = ', '.join('<a href="%s" itemprop="author">%s</a>' % (a.url(), a.name) for a in page.get_authors())
+                  $:author_list
+                $else:
+                  <em>Unknown author</em>
+              </h2>
+            </div>
 
-    </div>
-    <div class="book-about">
-      <h1>
-        $if page.get('subtitle', ''):
-          <span itemprop="name">$page.title</span><span title="subtitle">: $page.subtitle</span>
-        $else:
-          <span itemprop="name">$page.title</span>
-      </h1>
-      $if page.description:
-        <div class="desc">$:sanitize(format(page.description))</div>
-    </div>
-    <div class="cta-box">
-      <div class="section">
-	<p>1st Edition by Penguin, 2014</p>
-	<p>204 Pages</p>
-	<div class="cta-btns">
-	  <button class="availability primary cta-btn"><img class="book-decoration" src="/static/images/book.png"/> Read</button>
-	  <button class="likability secondary cta-btn"><img class="heart-decoration" src="/static/images/heart.png"/> 100</button>
-	</div>
-      </div>
-      <div class="section">
-	<table class="price-table">
-	  <tbody>
-	    <tr>
-	      <td><a href="">Check local libraries</a></td>
-	    </tr>
-	    <tr>
-	      <td><a href="">Buy on Amazon</a></td>
-	    </tr>
-	    <tr>
-	      <td><a href="">Buy on Better World Books</a></td>
-	    </tr>
-	  </tbody>
-	</table>
-      </div>
-      <div class="section">
-	$ edit_url = page.url(suffix="/edit") if page.type.key in ["/type/work", "/type/edition"] else page.key + "?m=edit"
-	<a class="linkButton" name="$edit_url" title="Edit this template" accesskey="e">Edit this book</a>
-        $ author = page.get_most_recent_change().author if "superfast" in ctx.features else get_recent_author(page)
-        $if author:
-            <div class="brown smaller sansserif">$_("Last edited by") <a href="$author.key" rel="nofollow">$author.displayname</a></div>
-        $else:
-            <div class="brown smaller sansserif">$_("Last edited anonymously")</div>
-        <div class="smallest gray sansserif">$(page.last_modified and datestr(page.last_modified)) | <a href="$page.url(m='history')" rel="nofollow" title="View this template's edit history">History</a></div>
-    </div>
+            $if page.description:
+              <div class="book-description">$:sanitize(format(page.description))</div>
 
-
+            <hr/>
+            <div class="book-edition-description">
+              <h6>This Edition</h6>
+            </div>
+          </div>
+        </div>
       </div>
 
+      $#<div class="contentLists results">
+      $#  <div class="covers resultsCovers">
+      $#    <ul id="carousel-$(primary_author)" class="topicalCarousel jcarousel-skin-OL">
+      $#    </ul>
+      $#  </div>
+      $#</div>
+      
+      <script type="text/javascript">
+        \$().ready(function() {
+          var delay = 0;
+          var type = "authors";
+          var subject = "$(primary_author)";
+          setTimeout(function() {
+          $#    create_subject_carousel(subject, type, options);
+          }, delay);
+        });
+      </script>
+
+
+      $if "lists" in ctx.features:
+        <div class="book-lists">
+            $if page.edition_count > 1:
+                <script type="text/javascript">
+                \$().ready(function(){
+                    \$('#widget-my-lists').children().insertBefore('#widget-my-lists').end().end().remove();
+                    \$('#widget-other-lists').children().insertBefore('#widget-other-lists').end().end().remove();
+                    if (\$('.dropit').length) {
+                        \$('#widget-add').addClass('contentQuarter').css('min-height','35px');
+                        \$('#listsWork .listLists').wrap('<div class="contentThreeQuarter" style="min-height:35px;">');
+                        \$('<div class="contentSpacer"></div>').insertBefore('.contentThreeQuarter');
+                        \$('#listsWork').addClass('collapse');
+                    } else {
+                        \$('#listsWork').css('width','100%');
+                        \$('ul.listLists').css('width','100%')
+                    };
+                });
+                </script>
+                $:render_template("lists/widget", page)
+        </div>
+
+    </div>
+    <div class="right-column">
+      <div class="cta-box">
+        <div class="section book-edition-actions">
+          <div class="book-edition-summary">
+            <p>1st Edition by Penguin, 2014</p>
+            <p>204 Pages</p>
+          </div>
+          <div class="cta-btns">
+            <button class="availability primary cta-btn">
+              $#<img class="book-decoration" src="/static/images/book.png"/>
+              Read</button>
+            <button class="likability secondary cta-btn"><img class="heart-decoration" src="/static/images/heart.png"/> 100</button>
+          </div>
+          $#<h3>$page.edition_count editions</h3>
+          $#<p>Print Disabled <a href="">DAISY</a></p>
+        </div>
+        <div class="section book-prices">
+          <table class="price-table">
+            <tbody>
+              <tr>
+                <td><a href="">Check local libraries</a></td>
+              </tr>
+              <tr>
+                <td><a href="">Buy on Amazon</a></td>
+              </tr>
+              <tr>
+                <td><a href="">Buy on Better World Books</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section book-edit">
+          $ edit_url = page.url(suffix="/edit") if page.type.key in ["/type/work", "/type/edition"] else page.key + "?m=edit"
+          <a class="linkButton" name="$edit_url" title="Edit this template" accesskey="e">Edit this page</a>
+          $ author = page.get_most_recent_change().author if "superfast" in ctx.features else get_recent_author(page)
+          <div class="book-edit-details">
+            <a href="$page.url(m='history')" rel="nofollow" title="View this template's edit history">History</a>
+          $if author:
+              $_("Last edited by") <a href="$author.key" rel="nofollow">$author.displayname</a>
+          $else:
+              $_("Last edited anonymously")
+          $(page.last_modified and datestr(page.last_modified))
+          </div>
+        </div>
+      </div>
+
+      <div class="section book-share">
+        <img src="/static/images/twitter.svg"/>
+        <img src="/static/images/pinterest.svg"/>
+        <img src="/static/images/facebook.svg"/>
+      </div>
+
+      <div class="section book-subjects">
+        $:render_subjects("Subjects", page.get_subjects())
+      </div>
     </div>
   </div>
+
 
     <div id="contentHead">
 
         $:macros.databarView(page)
 
-        <h1>
-            $if page.get('subtitle', ''):
-                <span itemprop="name">$page.title</span><span title="subtitle">: $page.subtitle</span>
-            $else:
-                <span itemprop="name">$page.title</span>
-            $if page.edition_count:
-                <span class="tools" style="white-space:nowrap;">
+
                 $if page.edition_count == 1:
                     <a href="$page.get_one_edition().url()" title="View this edition">1 edition</a>
                 $else:
@@ -203,15 +289,6 @@ $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
                 <div class="sansserif smallest brown collapse">Original languages</div>
                 $', '.join(lang.name for lang in page.original_languages)<p>
 
-            $def render_subjects(label, subjects, prefix=""):
-                $if subjects:
-                    <div class="section" style="margin-bottom:15px;">
-                        <h6 class="collapse black uppercase">$label</h6>
-                        <div class="sansserif">
-                        $for subject in subjects:
-                            <a href="/subjects/$prefix$utf8(subject.lower().replace(' ', '_').replace(',',''))">$subject</a>$cond(not loop.last,",","")
-                        </div>
-                    </div>
 
             $:render_subjects("Subjects", page.get_subjects())
             $:render_subjects("People", page.subject_people, prefix="person:")
