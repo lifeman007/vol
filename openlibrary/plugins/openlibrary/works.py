@@ -13,7 +13,7 @@ class work_edition(delegate.page):
         raise web.seeother('/books/%s' % edition_key)
 
 add_hook("work_edition", work_edition)
-    
+
 class work_editions(delegate.page):
     path = "(/works/OL\d+W)/[^/]+/editions"
 
