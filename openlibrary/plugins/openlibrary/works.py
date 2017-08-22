@@ -7,10 +7,11 @@ from infogami.utils.view import render_template, public
 from infogami.plugins.api.code import add_hook
 
 class work_edition(delegate.page):
-    path = "(/works/OL\d+W)/[^/]+/editions/([^/])"
+    path = "(/works/OL\d+W)/[^/]+/editions/(OL\d+M)"
 
     def GET(self, work_key, edition_key):
-        raise web.seeother('/books/%s' % edition_key)
+        page = web.ctx.site.get('/books/' + edition_key)
+        return render_template("type/edition/view", page)
 
 add_hook("work_edition", work_edition)
 

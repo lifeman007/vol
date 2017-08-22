@@ -243,7 +243,7 @@ $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
         $elif page.edition_count > 1:
             <div class="clearfix"></div>
 	    <a href="$(page.url())/editions">See all $commify(page.edition_count) editions</a>
-            $:render_template("type/work/editions_datatable", page)
+            $#:render_template("type/work/editions_datatable", page)
 
         $:render_template("lib/history", page)
     </div>
