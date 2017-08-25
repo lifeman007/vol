@@ -79,6 +79,22 @@ $if isbn_10 and not asin:
         </div>
   </div>
 
+
+  $ share_links = ctx.get('share_links')
+  $if share_links:
+      <div class="shareLinks">
+        <ul class="shareLinks-list">
+          $for share_link in share_links:
+            $ track_tag = share_link['text'].replace(' ', '-')
+              <li>
+                <a href="$share_link['url']" class="sansserif large" target="_blank" data-ol-link-track="Share|$track_tag">
+                  <img alt="$(share_link['text'])" class="share-link" src="/static/images/$(share_link['text'].lower()).svg"/>
+                </a>
+	      </li>
+        </ul>
+      </div>
+
+
 $if page.volumes:
     <h3 class="header">
         <span class="icon read"></span>
