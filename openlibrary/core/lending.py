@@ -150,6 +150,8 @@ def get_available(limit=None, page=1, subject=None, query=None, sorts=None):
         return {'error': 'request_timeout'}
 
 def get_availability(key, ids):
+    print(ids)
+    print(key)
     url = '%s?%s=%s' % (config_ia_availability_api_v2_url, key, ','.join(ids))
     try:
         content = urllib2.urlopen(url=url, timeout=config_http_request_timeout).read()
@@ -157,18 +159,19 @@ def get_availability(key, ids):
     except Exception as e:
         return {'error': 'request_timeout'}
 
-def get_edition_availability(ol_edition_id):
-    return get_availability_of_editions([ol_edition_id])
+def get_edition_availability(edition_olid):
+    return get_availability_of_editions([edition_olid])[edition_olid]
 
-def get_availability_of_editions(ol_edition_ids):
+def get_availability_of_editions(edition_olids):
     """Given a list of Open Library edition IDs, returns a list of
     Availability v2 results.
     """
-    return get_availability('openlibrary_edition', ol_edition_ids)
+    return get_availability('openlibrary_edition', edition_olids)
 
 def get_availability_of_ocaid(ocaid):
     """Retrieves availability based on ocaid/archive.org identifier"""
-    return get_availability('identifier', [ocaid])
+    response = get_availability('identifier', [ocaid]) or {}
+    return response.get(ocaid)
 
 def get_availability_of_ocaids(ocaids):
     """Retrieves availability based on ocaids/archive.org identifiers"""
@@ -176,6 +179,9 @@ def get_availability_of_ocaids(ocaids):
 
 def get_availability_of_works(ol_work_ids):
     return get_availability('openlibrary_work', ol_work_ids)
+
+def get_work_availability(work_olid):
+    return get_availablility_of_works([work_olid])[work_olid]
 
 def is_loaned_out(identifier):
     """Returns True if the given identifier is loaned out.

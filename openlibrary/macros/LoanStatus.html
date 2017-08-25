@@ -2,6 +2,10 @@ $def with (page, ebook_text, user, current_and_available_loans, contributor, lin
 
 $# TODO construct list of available formats from available_loans
 
+$ availability_summary = get_book_availability_summary(page.ocaid)
+
+<p>$availability_summary</p>
+
 $if current_and_available_loans:
   $ current_loans = current_and_available_loans[0]
   $ available_loans = current_and_available_loans[1]
@@ -27,6 +31,11 @@ $if user:
 
 $ borrow_link = page.url() + '/borrow'
 
+<div class="searchResultItemCTA">
+  $if availability_summary['edition']['status'] == 'open':
+    <a href="$borrow_link" class="borrow_available borrow-link cta-btn" data-ol-link-track="open">Read</a>
+
+
 $if user_loan:
     <div class="btn-notice">
       <p>
@@ -44,19 +53,19 @@ $if user_loan:
       </form>
     </div>
 
-$elif available_loans:
+$elif availability_summary['edition']['status'] == 'borrow_available':
     <div class="btn-notice">
       <p>
         <span class="smaller">Read in-browser or download the ePub / PDF from $contributor</span>
       </p>
       <p>
-        <a href="$borrow_link" title="Borrow from $contributor" id="borrow_ebook" class="borrow-btn borrow-link">
+        <a href="$borrow_link" title="Borrow from $contributor" id="borrow_ebook" class="borrow-btn borrow-link borrow_available cta-btn">
           Borrow eBook
         </a>
       </p>
     </div>
 
-$else:
+$elif availability_summary['edition']['status'] == 'borrow_unavailable':
     <p>
         <span class="smaller">This eBook is checked out.</span>
     </p>
@@ -87,3 +96,4 @@ $else:
             <input type="submit" class="submit wait-btn" id="waitlist_ebook" value="Join waiting list"/>
           </form>
         </div>
+</div>

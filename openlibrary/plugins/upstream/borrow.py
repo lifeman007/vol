@@ -119,8 +119,7 @@ class borrow(delegate.page):
 
         # Make a call to availability v2 update the subjects according
         # to result if `open`, redirect to bookreader
-        response = lending.get_availability_of_ocaid(edition.ocaid)
-        availability = response[edition.ocaid] if response else {}
+        availability = lending.get_availability_of_ocaid(edition.ocaid)
         if availability and availability['status'] == 'open':
             raise web.seeother('https://archive.org/stream/' + edition.ocaid + '?ref=ol')
 
@@ -361,6 +360,19 @@ class ia_loan_status(delegate.page):
     def GET(self, itemid):
         d = get_borrow_status(itemid, include_resources=False, include_ia=False)
         return delegate.RawText(simplejson.dumps(d), content_type="application/json")
+
+@public
+def get_book_availability_summary(ocaid):
+    if not ocaid:
+        return {}
+    data = {
+        'edition': lending.get_availability_of_ocaid(ocaid)
+    }
+    if 'openlibrary_work' in data['edition']:
+        work_olid = data['edition']['openlibrary_work']
+        if work_olid:
+            data['work'] = lending.get_work_availability(work_olid)
+    return data
 
 @public
 def get_borrow_status(itemid, include_resources=True, include_ia=True, edition=None):
