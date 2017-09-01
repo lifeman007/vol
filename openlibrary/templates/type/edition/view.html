@@ -4,6 +4,7 @@ $ title_suffix = cond(page.publish_date, u"({0} edition)".format(page.publish_da
 $ title = page.title + " " + title_suffix
 $ title_with_site = title + " | Open Library"
 $ meta_cover_url = item_image(page.get_cover_url("M"), default="https://openlibrary.org/images/icons/avatar_book-sm.png")
+$ work = page.works and page.works[0]
 
 $var title: $title
 
@@ -103,8 +104,6 @@ $def display_goodreads(label, ids):
             </tbody>
         </table>
 
-$def display_contributor(c):
-    <li><span>$c.role</span><br />$c.name </li>
 
 $ work = page.works and page.works[0] or None
 
@@ -124,99 +123,15 @@ $add_metatag(property="og:description", content=description)
 $set_share_links(url=request.canonical_url, title=title, view_context=ctx)
 
 $ ebook_status = page.get_ebook_status()
+$ work = page.works and page.works[0]
 
-$if ebook_status == "read-online":
-    <div class="page-banner sansserief">
-        This title is part of the <a href="https://openlibrary.org/read">classic eBook collection</a>.
-        $ read_url = "https://%s/stream/%s?ref=ol" % (bookreader_host(), page.ocaid)
-        <a class="button" href="$read_url">Read online now!</a>
-    </div>
-$elif ebook_status == "borrow-available":
-    <div class="page-banner sansserief">
-        This title is part of the <a href="https://openlibrary.org/borrow">Lending Library collection</a>.
-        <a class="button borrow-link" href="$page.url('/borrow')">Borrow eBook</a>
-    </div>
-$elif ebook_status == "borrow-checkedout":
-    <div class="page-banner sansserief">
-        This title from the <a href="https://openlibrary.org/borrow">Lending Library collection</a> is already checked out.
-        <a class="button borrow-link" href="$page.url('/borrow')">Join the waiting list</a>
-    </div>
-$elif ebook_status == "borrow-user-waiting":
-    <div class="page-banner sansserief">
-        $ position = page.get_waitinglist_position(ctx.user)
-        $if position == 1:
-            You are waiting for this book and you are the next person to get this book.
-        $elif position == 2:
-            You are waiting for this book and one person ahead of you in the waiting list.
-        $else:
-            You are waiting for this book and $(position-1) people are ahead of you in the waiting list.your loans?
-         <a href="/account/loans">Review your loans?</a>
-    </div>
-$elif ebook_status == "borrow-user-checkedout":
-    <div class="page-banner sansserief">
-        You have checked out this book. <a href="/account/loans">Review your loans?</a>
+  $if work:
+    <div class="page-banner sansserief browse-editions">
+      Looking for a different edition of <a href="$work.url()">$(page.title)</a>? Browse all <a href="$work.url()">$work.edition_count editions</a>
     </div>
 
-<div id="contentHead">
-    <table width="100%"><tbody><tr>
 
-    <td valign="top" style="padding-right:10px;">
-        $ cover_url = None
-        $# optimization to avoid solr query to find work cover
-        $if work and work.edition_count == 1:
-            $ cover_url = work.get_cover_url('S', use_solr=False) or page.get_cover_url('S')
-        $:render_template('covers/book_cover_small', page.works[0], cover_url=cover_url)
-    </td>
-    $ item_id = None
-    $if 'ocaid' in page:
-        $ item_id = page['ocaid']
-        $ meta_fields = page.get_ia_meta_fields()
-        $if meta_fields:
-            $ collection = meta_fields.get('collection', [])
-            $if 'printdisabled' in collection or 'lendinglibrary' in collection:
-                $ item_id = None
-
-    <td valign="top" width="100%">
-    $:macros.databarView(page)
-    <div class="navEdition brown sansserif small">
-        $ work = page.works and page.works[0]
-        $if work:
-            <strong>$work.edition_count edition$("s" if work.edition_count != 1 else "")</strong> of
-            <span title="$_('Go to the main page for %s', page.title)"><a href="$work.url()">$truncate(work.title or "", 60)</a></span>
-        $else:
-            <strong>$:_('1 edition')</strong> record for of $page.title
-        $ authors_byline = get_authors_byline(page)
-        $if authors_byline:
-            $_("by") <span title="$_('Author')">$:authors_byline</span>
-        $else:
-            $:_("by an <em>unknown author</em>")
-        $if work:
-            <span class="smaller">&nbsp;&bull;&nbsp;<a href="/books/add?work=$work.key" title="$_('Add another edition of') $page.title">$_("Add edition")</a>?</span>
-        <br />
-        <div class="shift">
-            $if page.ocaid:
-                An ebook is available for this edition.
-                <a href="#read">Go to the read section to download</a>.
-            $else:
-                No ebook is available for this edition.
-        </div>
-        $if page.works[0].edition_count > 1:
-            $ prev = page.get_prev()
-            $ next = page.get_next()
-            $if prev:
-                <a href="/books/$prev" title="$:_('View the previous edition of %s', page.title)">&larr; $_("Previous")</a>&nbsp;|
-            $else:
-                &larr; $_("Previous")&nbsp;|
-            $if next:
-                <a href="/books/$next" title="$:_('View the next edition of %s', page.title)">$_("Next") &rarr;</a>
-            $else:
-                $_("Next") &rarr;
-    </div>
-    </td>
-    </tr></tbody></table>
-</div>
-
-<div id="contentBody" itemscope itemtype="https://schema.org/Book">
+<div id="contentBody" class="edition-page" itemscope itemtype="https://schema.org/Book">
 
     <div class="workDetails">
 
@@ -228,31 +143,32 @@ $elif ebook_status == "borrow-user-checkedout":
                 $if not page.is_fake_record():
                     $:render_template('covers/change', page, ".edition-cover .bookCover img")
             </div>
-
-        $ contributors = page.get('contributors', [])
-        $if contributors:
-            <div class="section">
-                <h3 class="collapse">$_("Contributors")</h3>
-                <ul class="contributors">
-                    $for c in contributors:
-                        $:display_contributor(c)
-                </ul>
-            </div>
         </div>
 
         <div class="editionAbout">
 
             <div class="section sansserif">
-                <h1 class="edition">
-                    <strong itemprop="name">$page.title</strong>
-                $if page.subtitle:
-                    <br /><em>$page.subtitle</em>
-                $if page.edition_title or page.edition_name:
-                    <br />$page.edition_title $page.edition_name
+                <h1 class="edition-title" itemprop="name">
+                  $ edition_title = work.get('title') or page.title
+                  
+                  $if work.get('subtitle') or page.get('subtitle'):
+                    $(edition_title): <span class="edition-subtitle">$(work.get('subtitle') or page.get('subtitle'))
+                  $else:
+                    $(edition_title)
+                </h1>
+
+                $if page.get('edition_title') or page.get('edition_name'):
+                    <h2 class="edition-subtitle">$(page.get('edition_title') or page.get('edition_name'))</h2>
                 $ authors_byline = get_authors_byline(page, include_schema=True)
                 $if authors_byline:
-                    <br />$_("by") $:authors_byline
-                </h1>
+                    <h2 class="edition-authors">$_("by") $:authors_byline</h2>
+
+                $ contributors = page.get('contributors', [])
+                $if contributors:
+                    <h4 class="contributors">
+                      $:', '.join(['<span class="contributor"><span class="contributor-name">%s</span> (<span class="contributor-role-%s">%s</span>)</span>' % (c.name, c.role, c.role) for c in contributors])
+                    </h4>
+
                 <h4 class="publisher">
                     $if page.publish_date or page.publishers or page.publish_places:
                         Published
@@ -276,9 +192,11 @@ $elif ebook_status == "borrow-user-checkedout":
                 </h4>
             </div>
 
-        $if page.description:
-            <h3 class="collapse">$_("About the Book")</h3>
-            $:format(page.description)
+        $if work.get('description') or page.get('description'):
+            <h3 class="collapse">$_("About the Book")</h3>            
+            $:sanitize(format(work.description or page.description))
+
+        <hr/>
 
         $if page.first_sentence:
             <h3 class="collapse">$_("First Sentence")</h3>
@@ -293,7 +211,7 @@ $elif ebook_status == "borrow-user-checkedout":
                 $for toc in table_of_contents:
                     <tr class="toc-level-$toc.level">
                         <td class="toc-label">$toc.label</td>
-                        $if item_id and toc.pagenum.isdigit():
+                        $if page.get('ocaid') and toc.pagenum.isdigit():
                             <td class="toc-title"><a href="//archive.org/stream/$item_id#page/$toc.pagenum">$toc.title</a></td>
                         $else:
                             <td class="toc-title">$toc.title</td>
@@ -368,23 +286,6 @@ $elif ebook_status == "borrow-user-checkedout":
 
         <div class="editionTools">
             $:macros.databarWork(page)
-
-            $# pages like /books/ia:foo00bar are fake records created from metadata API.
-            $# Adding them to lists doesn't work. Disabling it to avoid any issues.
-            $if "lists" in ctx.features and not page.is_fake_record():
-                <div class="Tools">
-                    $:render_template("lists/widget", page)
-                </div>
-
-            $ links = page.get_links()
-            $if links:
-                <div class="section">
-                   <h3>Links <span class="gray small sansserif">($_("that leave Open Library"))</span></h3>
-                   <ul class="booklinks sansserif">
-                   $for link in links:
-                       <li><a href="$link.url">$link.title</a></li>
-                   </ul>
-                </div>
         </div>
 
     </div>

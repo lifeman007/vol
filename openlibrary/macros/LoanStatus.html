@@ -4,8 +4,6 @@ $# TODO construct list of available formats from available_loans
 
 $ availability_summary = get_book_availability_summary(page.ocaid)
 
-<p>$availability_summary</p>
-
 $if current_and_available_loans:
   $ current_loans = current_and_available_loans[0]
   $ available_loans = current_and_available_loans[1]

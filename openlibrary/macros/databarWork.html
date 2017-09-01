@@ -42,46 +42,65 @@ $if isbn_10 and not asin:
     $ asin = isbn_10
 
 <div class="Tools">
-  <div class="CTAbox">
-    $ availability_summary = get_book_availability_summary(page.ocaid)
-    $if availability_summary:
-      $if availability_summary['edition']['status'] == 'open':
-        <a href="$(page.url())/borrow" class="borrow_available borrow-link cta-btn cta-button" data-ol-link-track="open">Read</a>
-      $elif availability_summary['edition']['status'] == 'borrow_available':
-        <a href="$(page.url())/borrow" class="borrow_available borrow-link cta-btn cta-button" data-ol-link-track="borrow_available">Borrow</a>
-      $elif availability_summary['edition']['status'] == 'borrow_unavailable':
-        $ current_and_available_loans = page.get_current_and_available_loans()
-        $ user_loan = None
-        $if ctx.user:
-            $for current_loan in current_and_available_loans[0]:
-                $if current_loan['user'] == ctx.user.key:
-                    $ user_loan = current_loan
-                    $ break
-        $if user_loan:
-            pass
-        $else:
-          <form method="POST" action="$(page.url())/borrow?action=join-waitinglist"
-                class="join-waitlist waitinglist-form borrow_unavailable cta-btn cta-button" data-ol-link-track="borrow_unavailable">
-            <input type="hidden" name="action" value="join-waitinglist">Join Waitlist
-          </form>
-      $if page.get('ocaid'):
-        <div>
-          <a href="//archive.org/download/$(page.ocaid)/$(page.ocaid)_daisy.zip" title="Protected DAISY">
-            <span class="actions">
-              <span class="image daisy"></span>
-            </span>
-            <span class="label">Download DAISY</span>
-          </a>
-        </div>
-      $else:
-        <div class="panel">
-          <p class="smaller">No readable version available.</p>
-        </div>
-  </div>
+  <div class="edition-menu">
+    <div class="edition-menu-ctas edition-menu-section">
+      $ availability_summary = get_book_availability_summary(page.ocaid)
 
+      $if availability_summary:
+        $if availability_summary['edition']['status'] == 'open':
+          <a href="$(page.url())/borrow" class="borrow_available borrow-link cta-btn" data-ol-link-track="open">Read</a>
+        $elif availability_summary['edition']['status'] == 'borrow_available':
+          <a href="$(page.url())/borrow" class="borrow_available borrow-link cta-btn" data-ol-link-track="borrow_available">Borrow</a>
+        $elif availability_summary['edition']['status'] == 'borrow_unavailable':
+          $ current_and_available_loans = page.get_current_and_available_loans()
+          $ user_loan = None
+          $if ctx.user:
+              $for current_loan in current_and_available_loans[0]:
+                  $if current_loan['user'] == ctx.user.key:
+                      $ user_loan = current_loan
+                      $ break
+          $if user_loan:
+              $# The user is on waitlist! Show messages accordingly
+              pass
+          $else:
+            <form method="POST" action="$(page.url())/borrow?action=join-waitinglist"
+                  class="join-waitlist waitinglist-form borrow_unavailable cta-btn" data-ol-link-track="borrow_unavailable">
+              <input type="hidden" name="action" value="join-waitinglist">Join Waitlist
+            </form>
+
+            $if availability_summary.get('work') and availability_summary['work']['status'] in ['open', 'borrow_available']:
+              $ other_edition = availability_summary['work']['openlibrary_edition']
+              <div class="edition-availability-alert">
+                <p>This edition is checked out, but another edition is available now!</p>
+                <a class="another_edition_available cta-btn" href="/books/$(other_edition)">See Available Copy</a>
+                </p>
+              </div>
+
+        $if page.get('ocaid'):
+          <div class="print-disabled-download">
+            Print disabled?
+            <a href="//archive.org/download/$(page.ocaid)/$(page.ocaid)_daisy.zip" title="Protected DAISY">
+              <span class="actions">
+                <span class="image daisy"></span>
+              </span>
+              <span class="label">Download DAISY</span>
+            </a>
+          </div>
+        $else:
+          <div class="panel">
+            <p class="smaller">No readable version available.</p>
+          </div>
+        </p>
+
+        $if "lists" in ctx.features and not page.is_fake_record():
+          <div class="edition-menu-lists">
+            $:render_template("lists/widget", page, preview=False)
+          </div>
+    </div>
 
   $ share_links = ctx.get('share_links')
   $if share_links:
+    <div class="edition-menu-share-options edition-menu-section">
       <div class="shareLinks">
         <ul class="shareLinks-list">
           $for share_link in share_links:
@@ -93,7 +112,65 @@ $if isbn_10 and not asin:
 	      </li>
         </ul>
       </div>
+    </div>
 
+    <div class="edition-menu-buy-options edition-menu-section">
+      $if isbn or asin or scribd:
+        $:macros.AffiliateLinks({'isbn': isbn, 'asin': asin, 'scribd': scribd, 'prices': prices})
+      $else:
+        $if page.is_fake_record():
+          <p class="smaller gray"><span id="isbnadd">Add an ISBN</span> <span class="smaller">to link to booksellers</span></p>
+	$else:
+          <p><a id="isbnadd" href="$edit_url">Add an ISBN</a> <span class="smaller">to link to booksellers</span></>
+    </div>
+
+    $if isbn:
+      <div class="edition-menu-physical-options edition-menu-section">
+        <p><a href="https://worldcat.org/isbn/$isbn" title="Check WorldCat for an edition near you">
+            Find physical copies of this book</a> &mdash; Powered by <a href="https://worldcat.org">WorldCat</a></p>
+      </div>
+
+    $ links = page.get_links()
+    $if links:
+        <div class="edition-menu-links edition-menu-section">
+          <h3>Links <span class="gray small sansserif">($_("that leave Open Library"))</span></h3>
+          <ul class="booklinks sansserif">
+            $for link in links:
+              <li><a href="$link.url">$link.title</a></li>
+          </ul>
+        </div>
+
+    <div class="edition-menu-section edition-menu-edit-options">
+      $if page.type.key == '/type/work' and page.edition_count == 1:
+        $ edit_url = page.get_one_edition().get_url(suffix="/edit") or page.url(suffix="/edit")
+      $elif page.type.key in ["/type/work", "/type/edition", "/type/author"]:
+        $ edit_url = page.url(suffix="/edit")
+      $else:
+        $ edit_url = page.key + "?m=edit"
+
+      $if not page.is_fake_record():
+          $if page.type.key in ["/type/work", "/type/edition"]:
+            $ edit_url = page.url(suffix="/edit")
+          $else:
+            $ edit_url = page.key + "?m=edit"
+
+          $if "superfast" in ctx.features:
+            $ author = page.get_most_recent_change().author
+          $else:
+            $ author = get_recent_author(page)
+
+          <p>Last edited $(page.last_modified and datestr(page.last_modified))
+            $if author:
+              $_("by") <a href="$author.key" rel="nofollow">$author.displayname</a>
+            $else:
+              $_("anonymously")
+          </p>
+          <p>
+            <a href="$page.url(m='history')" rel="nofollow" title="View this template's edit history">See edit history</a> or <a href="$(edit_url)">Edit this page</a>
+          </p>
+      </div>
+    </div>
+  </div>
 
 $if page.volumes:
     <h3 class="header">
@@ -122,59 +199,8 @@ $if page.volumes:
                 </script>
 
                 $ checkedout = current_and_available_loans[0] if current_and_available_loans else []
-                $if checkedout and not user_loan:
-                    $ work = page.works and page.works[0]
-                    $if work and work.edition_count > 1:
-                        <p class="btn-notice">
-                            <span class="smaller">Other editions of this book may be available.</span>
-                            </br>
-                            <a data-ol-link-track="EditionPageCheckOtherEditionsButton" href="$work.url()" class="check-btn">Check Other Editions</a>
-                        </p>
-
-            <p>
-                $if oclc_numbers:
-                    <p><a href="$worldcatoclc.replace('XXX', oclc_numbers)" title="Check WorldCat for an edition near you">
-                $elif isbn:
-                    <a href="$worldcat.replace('XXX', isbn)" title="Check WorldCat for an edition near you">
-
-		Find a physical copy near you</a> &mdash; <span class="smaller">powered by <a href="https://worldcat.org">WorldCat</a></span>
-            </p>
         </div>
     </div>
-$else:
-    <div>
-        <h3 class="closed">
-            <span class="icon borrowinact"></span>
-            <span class="head">Borrow</span>
-	</h3>
-	<div class="panel">
-            <p class="smaller">Try a <a href="https://www.worldcat.org/" title="Search WorldCat for an available edition">WorldCat</a> search?</p>
-	</div>
-    </div>
 
-$if isbn or asin or scribd:
-    <div>
-        <h3 class="header">
-            <span class="icon buy"></span>
-            <span class="head">Buy</span>
-        </h3>
-        <div class="panel">
-            $:macros.AffiliateLinks({'isbn': isbn, 'asin': asin, 'scribd': scribd, 'prices': prices})
-        </div>
-    </div>
-$else:
-    <div>
-        <h3 class="closed">
-            <span class="icon buyinact"></span>
-            <span class="head">Buy</span>
-	</h3>
-	<div class="panel">
-            $if page.is_fake_record():
-                <p class="smaller gray"><span id="isbnadd">Add an ISBN</span> <span class="smaller">to link to booksellers</span></p>
-	    $else:
-                <p><a id="isbnadd" href="$edit_url">Add an ISBN</a> <span class="smaller">to link to booksellers</span></p>
-	</div>
-    </div>
 
 </div>
-<div class="clearfix"></div>

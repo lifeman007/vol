@@ -1,4 +1,4 @@
-$def with (page, user_lists_only=False)
+$def with (page, user_lists_only=False, preview=True)
 
 $if "lists" not in ctx.features:
     $return
@@ -88,7 +88,7 @@ $jsdef render_widget_add(lists):
       <div class="icon list hidetool"></div>
         <div class="dropper on">
             <a href="javascript:;" class="dropclick plain">
-                <h3>Add to list</h3>
+                <h3>Add to my lists</h3>
                 <div class="arrow"></div>
             </a>
             <div class="dropdown">
@@ -113,17 +113,6 @@ $jsdef render_head():
           <h3>Lists</h3>
           <div class="smallest lightgreen sansserif">watch for edits or export all records</div>
         </div>
-    $else:
-        <div>
-          <h3 class="header">
-            <span class="icon list heart-adjust"></span>
-            $if len(page_lists) > 0:
-                $ msg = ungettext("%s List", "%s Lists", len(page_lists))
-                <span class="head"><a href="$page_url/lists">$(sprintf(msg, len(page_lists)))</a></span>
-            $else:
-                <span class="head">$_("Lists")</span>
-          </h3>
-        </div>
 
 
 <div id="widget-head">
@@ -137,10 +126,10 @@ $if ctx.user:
     <div id="widget-add">
         $:render_widget_add(user_lists)
     </div>
-
-<ul class="listLists" id="widget-lists">
+$if preview:
+  <ul class="listLists" id="widget-lists">
     $:render_widget_display(page_lists, 3)
-</ul>
+  </ul>
 <div id="remove-dialog" class="hidden" title="Remove">Are you sure you want to remove <strong>$title</strong> from your list?</div>
 
 $if ctx.user:
@@ -251,7 +240,7 @@ $if ctx.user:
 
         // We've added new .dropclick element. Need to setup listeners again.
         \$('.dropclick').click(function(){
-            \$(this).next('.dropdown').slideToggle();
+            \$(this).next('.dropdown').slideToggle("fast");
             \$(this).parent().find('.arrow').toggleClass("up");
         });
 
@@ -364,7 +353,7 @@ $if ctx.user:
     }
 
     function close_popup() {
-        \$(this).next('.dropdown').slideToggle();
+        \$(this).next('.dropdown').slideToggle("fast");
         \$(this).parent().find('.arrow').toggleClass("down");
     }
 

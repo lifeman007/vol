@@ -150,8 +150,6 @@ def get_available(limit=None, page=1, subject=None, query=None, sorts=None):
         return {'error': 'request_timeout'}
 
 def get_availability(key, ids):
-    print(ids)
-    print(key)
     url = '%s?%s=%s' % (config_ia_availability_api_v2_url, key, ','.join(ids))
     try:
         content = urllib2.urlopen(url=url, timeout=config_http_request_timeout).read()
