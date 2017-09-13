@@ -4,6 +4,7 @@ import os
 import urllib
 import web
 
+from openlibrary.core import lending
 from openlibrary.core import helpers as h
 
 class ReadableUrlProcessor:
@@ -14,7 +15,7 @@ class ReadableUrlProcessor:
     The changequery function is also customized to support this.
     """
     patterns = [
-        (r'/\w+/OL\d+W/[^/]+/editions/\w+/OL\d+M', '/type/edition', 'title', 'untitled'),
+        (r'/\w+/OL\d+W/[^/]+/editions/OL\d+M', '/type/edition', 'title', 'untitled'),
         (r'/\w+/OL\d+M', '/type/edition', 'title', 'untitled'),
         (r'/\w+/ia:[a-zA-Z0-9_\.-]+', '/type/edition', 'title', 'untitled'),
         (r'/\w+/OL\d+A', '/type/author', 'name', 'noname'),
@@ -32,7 +33,53 @@ class ReadableUrlProcessor:
             if not web.ctx.site.get(web.ctx.path):
                 raise web.seeother("/people/" + web.ctx.path[len("/user/"):])
 
+        if web.ctx.path.startswith('/books/'):
+            """If we're an edition and the edition has a work, redirect to the
+            canonical work edition page
+            """
+            match = web.re_compile('^' + r'(/\w+/OL\d+M)/[^/]+').match(web.ctx.path)
+            if match and match.group(1):
+                edition = web.ctx.site.get(match.group(1))
+                work = edition.works and edition.works[0]
+                if work:
+                    edition_olid = edition.key.split('/')[2]                    
+                    raise web.redirect('%s/%s/editions/%s' % (
+                        work.key, h.urlsafe(work.title.strip()), edition_olid))
+
+        if web.ctx.path.startswith('/works/'):
+            """If we're a work and no edition is specified, redirect to the best edition. Otherwise,
+            verify the edition correctly belongs to this work
+            """
+            match = web.re_compile('^' + r'/\w+/(OL\d+W)/[^/]+/editions/(OL\d+M)').match(web.ctx.path) 
+            if match:  # check to make sure edition belongs to work
+                work_olid = match.group(1)
+                edition_olid = match.group(2)
+                edition = web.ctx.site.get('/books/%s' % edition_olid)
+                work = edition.works and edition.works[0]
+                if work:
+                    url = '%s/%s/editions/%s' % (
+                        work.key, h.urlsafe(work.title.strip()), edition_olid)
+                    if url != web.ctx.path:
+                        raise web.redirect(url)
+
+            else:
+                match2 = web.re_compile('^' + r'(/\w+/OL\d+W)').match(web.ctx.path)
+                if match2:
+                    work_key = match2.group(1)
+                    work = web.ctx.site.get(work_key)
+                    work_olid = work.key.split('/')[2]
+                    response = lending.get_work_availability(work_olid)
+                    if response.get('status') in ['open', 'borrow_available', 'borrow_unavailable']:
+                        edition_olid = response.get('openlibrary_edition')
+                    else:
+                        edition_olid = work.get_one_edition().key.split('/')[2]
+
+                    raise web.redirect('%s/%s/editions/%s' % (
+                        work_key, h.urlsafe(work.title.strip()), edition_olid))
+
+
         real_path, readable_path = get_readable_path(web.ctx.site, web.ctx.path, self.patterns, encoding=web.ctx.encoding)
+
 
         #@@ web.ctx.path is either quoted or unquoted depends on whether the application is running
         #@@ using builtin-server or lighttpd. Thats probably a bug in web.py.
@@ -76,14 +123,14 @@ def _get_object(site, key):
         obj = site.get(key)
 
     # redirect all /.*/OL123W to /works/OL123W
-    if obj is None and basename.startswith("OL") and basename.endswith("W"):
-        key = "/works/" + basename
-        obj = site.get(key)
+    #if obj is None and basename.startswith("OL") and basename.endswith("W"):
+    #    key = "/works/" + basename
+    #    obj = site.get(key)
 
     # redirect all /.*/OL123M to /books/OL123M
-    if obj is None and basename.startswith("OL") and basename.endswith("M"):
-        key = "/books/" + basename
-        obj = site.get(key)
+    #if obj is None and basename.startswith("OL") and basename.endswith("M"):
+    #    key = "/books/" + basename
+    #    obj = site.get(key)
 
     # redirect all /.*/OL123A to /authors/OL123A
     if obj is None and basename.startswith("OL") and basename.endswith("A"):
