@@ -2399,7 +2399,7 @@ div.Tools div.icon.list {background-position:0 0;}
 div.Tools div.icon.listed {background-position:-32px 0;}
 div.Tools div.dropper {position:absolute;top:0;width:198px;padding:8px 10px;z-index:10000;}
 div.Tools div.dropper.on {
-    border: 1px solid #e3e3e3;
+    border: 1px solid #c5c5c5;
     background-color:#fff;
     border-radius:4px;
 }
@@ -2413,7 +2413,7 @@ div.Tools div.dropper.on div.arrow.up {background-position:-32px 0!important;}
 div.Tools div.dropper h3 {
     font-size: 1em;
     font-weight: normal;
-    color: #999;
+    color: #999;;
     min-height: 1.125em;
     width: auto;
     text-align: center;
@@ -5661,7 +5661,7 @@ div#listsWork div.dropper.on {
     left: 0px;
     box-shadow: none;
     font-weight: normal;
-    background-color:#f6f6f6;
+    background-color:#;
     border: 1px solid #e3e3e3;
     border-radius:4px;
 }
@@ -5695,8 +5695,8 @@ div#subjectLists div.dropper.on {
     left: 0px;
     box-shadow: none;
     font-weight: normal;
-    background-color:#f6f6f6;
-    border: 1px solid #e3e3e3;
+    background-color:#c5c5c5;
+    border: 1px solid #999;
     border-radius:4px;
 }
 div#subjectLists div.dropper.on div.arrow {
