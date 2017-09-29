@@ -179,7 +179,7 @@ def get_availability_of_works(ol_work_ids):
     return get_availability('openlibrary_work', ol_work_ids)
 
 def get_work_availability(work_olid):
-    return get_availablility_of_works([work_olid])[work_olid]
+    return get_availability_of_works([work_olid])[work_olid]
 
 def is_loaned_out(identifier):
     """Returns True if the given identifier is loaned out.
