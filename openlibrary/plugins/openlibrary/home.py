@@ -64,6 +64,9 @@ def get_ia_carousel_books(query=None, subject=None, work_id=None, sorts=None,
     formatted_books = [format_book_data(book) for book in books if book != 'error']
     return formatted_books
 
+cached_ia_carousel_books = cache.memcache_memoize(
+    get_ia_carousel_books, 'home.ia_carousel_books', timeout=DEFAULT_CACHE_LIFETIME)
+
 @public
 def generic_carousel(key, query=None, subject=None, work_id=None, _type=None,
                      sorts=None, limit=None, timeout=None):
