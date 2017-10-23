@@ -3814,7 +3814,8 @@ select#select-id {
     margin-bottom: 10px;
     background-color: rgb(252, 252, 252);
     border-radius: 5px;
-    border-bottom: 1px solid #eee;
+    border: 1px solid #ddd;
+    border-bottom: 1px solid #ccc;
 }
 
 div.Tools .btn-notice p {
@@ -6685,7 +6686,7 @@ div.tools-override .Tools .btn-notice{
 
 div.tools-override div.dropper {
     z-index:10000;
-    width: 180px;
+    width: 179px;
     top: unset;
     left: unset;
 }
@@ -6730,7 +6731,7 @@ div.tools-override div.dropper {
     color: #fff;
 }
 
-.Tools div.btn-notice p a.borrow-btn, #read-options input[type=submit].wait-btn {
+.Tools div.btn-notice p a.borrow-btn, #read-options input[type=submit].wait-btn, #read-options input[type=submit].unwait-btn {
     font-size: 14px;
     padding: 7px 20px;
     text-align: center;
@@ -6739,8 +6740,8 @@ div.tools-override div.dropper {
 
 .Tools .check-availability {
     padding: 10px;
-    background-color: rgba(3, 109, 170, 0.05);
-    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     border-radius: 3px;
 }
 
@@ -6794,4 +6795,13 @@ p.print-disabled-download {
     background: rgba(255, 255, 255, 0.58);
     border-radius: 15px;
     margin-top: 3px;
+}
+
+.decorations button {
+    width: 171px;
+    background: #fff;
+    border: 2px solid #333;
+    padding: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;    
 }
