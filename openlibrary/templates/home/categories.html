@@ -74,7 +74,7 @@ $def with (id='categories_carousel', pixel='CarouselCategories')
             Subject.get_featured(function(results) {
                 for (var subject_key in results) {
                     var subject = results[subject_key];
-                    var count = addCommasToNumber(subject.work_count || 0);
+                    var count = addCommasToNumber(subject && subject.work_count ? subject.work_count :  0);
                     \$('[name="' + subject_key + '"]').text(count + ' books');
                 }
             });
