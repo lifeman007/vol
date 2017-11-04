@@ -6937,6 +6937,14 @@ ul#myreads-paginator li.selected:hover {
     border-bottom: 1px solid #eee;
 }
 
+.mybooks-menu ul.user-lists {
+}
+
+.mybooks-menu ul.user-lists .list-overflow {
+    max-height: 150px;
+    overflow: auto;
+}
+
 .mybooks-menu ul:last-child {
     border-bottom: none;
 }
@@ -6951,7 +6959,8 @@ ul#myreads-paginator li.selected:hover {
 }
 
 .mybooks-menu ul li a.selected{
-    background-color: #
+    background-color: #e5f1ff;
+    border-radius: 5px;
 }
 
 .mybooks-menu ul li.subsection {
