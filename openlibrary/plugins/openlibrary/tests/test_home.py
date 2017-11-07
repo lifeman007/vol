@@ -122,6 +122,7 @@ class TestHomeTemplates:
         headers = ["Books We Love", "Recently Returned", "Success",
                    "Thrillers", "Romance", "Technical Books",
                    "Classic Literature", "Textbooks"]
+
         for h in headers:
             assert h in html
 
